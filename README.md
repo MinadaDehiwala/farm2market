@@ -1,14 +1,12 @@
-Alright. Clean, professional, and impressive. Drop this straight into `README.md`.
-
----
-
 # 🌱 Farm2Market
 
-**A smart digital marketplace connecting farmers, buyers, and transporters with AI-powered price predictions**
+**A digital marketplace connecting farmers, buyers, and transporters with vegetable price forecasting tools**
+
+Prepared for **Minuri**.
 
 ![Vite](https://img.shields.io/badge/Vite-React-blueviolet)
 ![Firebase](https://img.shields.io/badge/Firebase-Auth%20%7C%20Hosting-orange)
-![AI](https://img.shields.io/badge/AI-Price%20Prediction-green)
+![Forecasting](https://img.shields.io/badge/Forecasting-Price%20Prediction-green)
 ![Status](https://img.shields.io/badge/Status-Production--Ready-success)
 
 ---
@@ -16,7 +14,7 @@ Alright. Clean, professional, and impressive. Drop this straight into `README.md
 ## 🚀 Overview
 
 **Farm2Market** is a full-stack web platform designed to modernize agricultural trade.
-It connects **farmers**, **buyers**, and **transporters** in one ecosystem while providing **AI-based vegetable price predictions** to support smarter decisions.
+It connects **farmers**, **buyers**, and **transporters** in one ecosystem while providing **vegetable price forecasting** to support smarter decisions.
 
 Built with performance, scalability, and real-world usability in mind.
 
@@ -31,7 +29,7 @@ Built with performance, scalability, and real-world usability in mind.
 * **Transporters**: Access logistics dashboards
 * **Guests**: Explore public data
 
-### 🤖 AI Price Prediction
+### 📈 Price Prediction
 
 * Time-series forecasting for vegetable prices
 * Visual charts and trend analysis
@@ -51,7 +49,7 @@ Built with performance, scalability, and real-world usability in mind.
 * Prediction dashboard
 * Stock management
 
-### 💬 Integrated AI Chatbot
+### 💬 Integrated Assistant
 
 * Context-aware assistant
 * Helps users navigate and understand data
@@ -79,7 +77,7 @@ Built with performance, scalability, and real-world usability in mind.
 * **Firebase Hosting**
 * **REST API** (external prediction service)
 
-### AI / Data
+### Data & Forecasting
 
 * Time-series prediction models
 * API-based integration
@@ -92,7 +90,7 @@ Built with performance, scalability, and real-world usability in mind.
 src/
 ├── app/                # App entry & routing
 ├── assets/             # Images & static assets
-├── components/         # Reusable UI & AI chatbot
+├── components/         # Reusable UI and assistant components
 ├── js/                 # Auth, guards, API config
 ├── layouts/            # Public & dashboard layouts
 ├── pages/              # All route-level pages
@@ -171,7 +169,7 @@ firebase deploy
 * Real-world problem solving
 * Clean React architecture
 * Role-based dashboards done right
-* AI integration without overengineering
+* Forecasting support without overengineering
 * Production-ready deployment
 
 ---
@@ -186,9 +184,8 @@ firebase deploy
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Project Note
 
-Built with care, logic, and caffeine ☕
-For academic, professional, and real-world impact.
+Prepared for Minuri with a focus on practical delivery, maintainability, and clear project presentation.
 
 ---
