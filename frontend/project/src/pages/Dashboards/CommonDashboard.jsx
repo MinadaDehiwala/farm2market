@@ -14,8 +14,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { db } from "../../js/firebase";
-import { APP_ENV } from "../../js/env";
 import { useAuth } from "../../state/authStore";
+import { useRuntimeConfig } from "../../state/runtimeConfigStore";
 import {
   createOrderRequest,
   toFirebaseCallableMessage,
@@ -106,6 +106,7 @@ const formatPrice = (value) => {
 
 export default function CommonDashboard() {
   const { user } = useAuth();
+  const { features } = useRuntimeConfig();
   const navigate = useNavigate();
 
   const [stocks, setStocks] = useState([]);
@@ -126,7 +127,11 @@ export default function CommonDashboard() {
     const unsub = onSnapshot(
       collection(db, "stocks"),
       (snap) => {
-        setStocks(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+        setStocks(
+          snap.docs
+            .map((d) => ({ id: d.id, ...d.data() }))
+            .filter((stock) => !stock.archivedAt)
+        );
         setLoading(false);
       },
       () => {
@@ -138,7 +143,7 @@ export default function CommonDashboard() {
   }, []);
 
   useEffect(() => {
-    if (!APP_ENV.FEATURE_ORDER_THREADS || !selectedStock || !user) {
+    if (!features.orderThreadsEnabled || !selectedStock || !user) {
       setFarmerProfile(null);
       setExistingOrder(null);
       setRequestQty("");
@@ -165,9 +170,9 @@ export default function CommonDashboard() {
 
         setFarmerProfile(farmerSnap.exists() ? farmerSnap.data() : null);
         setExistingOrder(
-          latestOrderSnap.docs[0]
-            ? { id: latestOrderSnap.docs[0].id, ...latestOrderSnap.docs[0].data() }
-            : null
+          latestOrderSnap.docs
+            .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }))
+            .find((order) => !order.archivedAt) || null
         );
       } catch {
         if (!cancelled) {
@@ -186,7 +191,7 @@ export default function CommonDashboard() {
     return () => {
       cancelled = true;
     };
-  }, [selectedStock, user]);
+  }, [features.orderThreadsEnabled, selectedStock, user]);
 
   const chartData = useMemo(() => {
     const filtered = stocks.filter(
@@ -415,7 +420,7 @@ export default function CommonDashboard() {
                     className="btn primary"
                     onClick={() => setSelectedStock(s)}
                   >
-                    {APP_ENV.FEATURE_ORDER_THREADS ? "Request & Contact" : "Contact Farmer"}
+                    {features.orderThreadsEnabled ? "Request & Contact" : "Contact Farmer"}
                   </button>
                 </div>
               </div>
@@ -431,7 +436,7 @@ export default function CommonDashboard() {
             <p><strong>Market:</strong> {selectedStock.market}</p>
             <p><strong>Pickup:</strong> {selectedStock.pickupLocation || "-"}</p>
 
-            {!APP_ENV.FEATURE_ORDER_THREADS && (
+            {!features.orderThreadsEnabled && (
               <>
                 <p><strong>Phone:</strong> {selectedStock.phone || "Not available"}</p>
                 <button className="btn" onClick={() => setSelectedStock(null)}>
@@ -440,7 +445,7 @@ export default function CommonDashboard() {
               </>
             )}
 
-            {APP_ENV.FEATURE_ORDER_THREADS && (
+            {features.orderThreadsEnabled && (
               <>
                 <div className="buyer-contact-divider" />
                 <p>

@@ -27,19 +27,47 @@ service cloud.firestore {
       return !("orderId" in data) || data.orderId == null;
     }
 
+    function hasPublicConfig() {
+      return exists(/databases/$(database)/documents/app_config/public);
+    }
+
+    function publicConfig() {
+      return get(/databases/$(database)/documents/app_config/public);
+    }
+
+    function maintenanceEnabled() {
+      return hasPublicConfig() &&
+        ("site" in publicConfig().data) &&
+        publicConfig().data.site.maintenanceEnabled == true;
+    }
+
+    function signupEnabled() {
+      return !hasPublicConfig() ||
+        !("features" in publicConfig().data) ||
+        publicConfig().data.features.signupEnabled != false;
+    }
+
+    function contactFormEnabled() {
+      return !hasPublicConfig() ||
+        !("features" in publicConfig().data) ||
+        publicConfig().data.features.contactFormEnabled != false;
+    }
+
     match /users/{uid} {
-      allow create: if isSelf(uid);
+      allow create: if isSelf(uid) && signupEnabled() && !maintenanceEnabled();
       allow read: if isAuthenticated();
-      allow update, delete: if isSelf(uid);
+      allow update, delete: if isSelf(uid) && !maintenanceEnabled();
     }
 
     match /stocks/{stockId} {
       allow read: if true;
 
       allow create: if isAuthenticated() &&
+        !maintenanceEnabled() &&
         request.resource.data.farmerId == request.auth.uid;
 
       allow update, delete: if isAuthenticated() &&
+        !maintenanceEnabled() &&
         resource.data.farmerId == request.auth.uid;
     }
 
@@ -48,9 +76,11 @@ service cloud.firestore {
 
       // Legacy direct writes (non-order flow).
       allow create: if isAuthenticated() &&
+        !maintenanceEnabled() &&
         request.resource.data.farmerId == request.auth.uid;
 
       allow update, delete: if isAuthenticated() &&
+        !maintenanceEnabled() &&
         isLegacyTransport(resource.data);
     }
 
@@ -83,8 +113,17 @@ service cloud.firestore {
     }
 
     match /contact_messages/{messageId} {
-      allow create: if true;
+      allow create: if !maintenanceEnabled() && contactFormEnabled();
       allow read, update, delete: if false;
+    }
+
+    match /app_config/{docId} {
+      allow read: if docId == "public";
+      allow write: if false;
+    }
+
+    match /admin_audit_log/{auditId} {
+      allow read, write: if false;
     }
 
     match /{document=**} {

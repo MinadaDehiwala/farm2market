@@ -8,6 +8,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 16px;
 }
 
 .orders-list-card {
@@ -32,20 +33,27 @@
   padding: 14px;
 }
 
+.order-item > div:first-child {
+  min-width: 0;
+}
+
 .order-title {
   color: #f8fafc;
   font-size: 14px;
   font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .order-meta {
   font-size: 13px;
   color: rgba(248, 250, 252, 0.88);
+  overflow-wrap: anywhere;
 }
 
 .order-time {
   font-size: 12px;
   color: rgba(226, 232, 240, 0.75);
+  overflow-wrap: anywhere;
 }
 
 .order-actions {
@@ -61,6 +69,10 @@
 }
 
 @media (max-width: 880px) {
+  .orders-header {
+    flex-direction: column;
+  }
+
   .order-item {
     flex-direction: column;
     align-items: flex-start;
@@ -72,5 +84,15 @@
 
   .order-actions .btn {
     flex: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .orders-list-card {
+    padding: 18px;
+  }
+
+  .order-actions .btn {
+    width: 100%;
   }
 }

@@ -161,3 +161,18 @@
     font-size: 2.2rem;
   }
 }
+
+@media (max-width: 900px) {
+  .farmer-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .farmer-table-card {
+    padding: 24px;
+  }
+
+  .farmer-stock-table {
+    min-width: 720px;
+  }
+}

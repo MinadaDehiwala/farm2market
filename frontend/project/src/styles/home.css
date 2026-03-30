@@ -1,300 +1,46 @@
-/* =========================
-   HOME PAGE ONLY
-========================= */
-
-/* Desktop: no scroll */
-
 :root {
   --header-height: 96px;
 }
 
-/* Remove layout padding effect on home */
-body { padding-top: 0; }
-
-
-/* =========================
-   HERO SECTION (UNCHANGED STYLE)
-========================= */
-
-.hero {
+.hero-wrapper {
   position: relative;
-  min-height: 80vh;
-  padding-top: 96px;
+  background: linear-gradient(180deg, rgba(243, 248, 244, 1), rgba(232, 241, 233, 1));
+}
 
+.landing-hero {
+  position: relative;
+  min-height: clamp(640px, 90vh, 880px);
   display: flex;
   align-items: center;
   justify-content: center;
-
+  padding: clamp(128px, 16vw, 168px) clamp(16px, 4vw, 24px) clamp(180px, 22vw, 240px);
   color: var(--white);
   overflow: hidden;
 }
 
-
-
-.hero-content {
-  text-align: center;
-  z-index: 1;
-  padding: 48px 24px;
-}
-
-.hero-title {
-  font-size: 56px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 24px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.hero-subtitle {
-  font-size: 20px;
-  line-height: 1.5;
-  margin-bottom: 40px;
-  opacity: 0.95;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-/* =========================
-   HERO BUTTONS – SAME STYLE + GLASS GROUP
-========================= */
-
-.hero-buttons {
-  display: inline-flex;
-  justify-content: center;
-}
-
-/* group them */
-.hero-buttons {
-  display: inline-flex;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 999px;
-
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.45),
-    rgba(150, 155, 161, 0.30)
-  );
-
-  backdrop-filter: blur(14px) saturate(180%);
-  -webkit-backdrop-filter: blur(14px) saturate(180%);
-
-  border: 1px solid rgba(255,255,255,0.35);
-
-  box-shadow:
-    0 1px 0 rgba(255,255,255,0.6) inset,
-    0 10px 24px rgba(0,0,0,0.12);
-}
-
-/* buttons keep original hero style */
-.hero-buttons .btn-hero {
-  padding: 12px 30px;
-  font-size: 16px;
-  font-weight: 600; /* bold */
-  border-radius: 999px;
-  background: transparent;
-  color: var(--text-dark);
-}
-
-.hero-buttons .btn-hero:hover {
-  background: rgba(255,255,255,0.35);
-}
-
-/* =========================
-   HERO DECORATION (UNCHANGED)
-========================= */
-
-.hero-decoration {
-  position: absolute;
-  width: 48px;
-  height: 48px;
-  opacity: 0.6;
-}
-
-.hero-decoration::before,
-.hero-decoration::after {
-  content: '';
-  position: absolute;
-  background-color: var(--white);
-}
-
-.hero-decoration::before {
-  width: 3px;
-  height: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.hero-decoration::after {
-  width: 100%;
-  height: 3px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.hero-decoration-1 {
-  top: 120px;
-  left: 15%;
-  animation: float 3s ease-in-out infinite;
-}
-
-.hero-decoration-2 {
-  top: 100px;
-  right: 12%;
-  animation: float 3s ease-in-out infinite 1.5s;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
-
-/* =========================
-   ROLES SECTION (UNCHANGED)
-========================= */
-
-.roles {
-  padding: 40px 0 80px;
-  background: linear-gradient(#ffffff, #f5f5f5);
-  margin-top: -20px;
-}
-
-.roles-title {
-  text-align: center;
-  font-size: 32px;
-  font-weight: 600;
-  margin-bottom: 32px;
-  color: var(--text-dark);
-}
-
-.roles-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.role-card {
-  background-color: var(--white);
-  border-radius: 16px;
-  padding: 40px 24px;
-  text-align: center;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.role-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-}
-
-.role-card img {
-  width: 110px;
-  height: 110px;
-  object-fit: contain;
-  margin-bottom: 24px;
-}
-
-.role-card h3 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: var(--text-dark);
-}
-
-.role-card p {
-  font-size: 16px;
-  color: var(--text-gray);
-}
-
-/* =========================
-   RESPONSIVE (UNCHANGED LOGIC)
-========================= */
-
-@media (max-width: 768px) {
-  html, body {
-    overflow-y: auto;
-  }
-
-  .hero-title {
-    font-size: 36px;
-  }
-
-  .hero-subtitle {
-    font-size: 16px;
-  }
-
-  .hero-buttons {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .btn-hero {
-    width: 100%;
-    max-width: 300px;
-  }
-
-  .roles-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .roles-title {
-    font-size: 26px;
-  }
-}
-
-.hero-buttons.glass-group {
-  width: fit-content;
-  max-width: 90%;
-  padding: 10px 14px;
-  gap: 1px;
-  border-radius: 999px;
-}
-
-/* =========================
-   REMOVE UNUSED FOOTER SPACE (HOME ONLY)
-========================= */
-
-.footer {
-  height: 0;
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
-}
-
-.hero-spacer {
-  height: 50px;  /* tighter */
-  /* or */
-  height: 110px; /* looser */
-}
-
-/* =========================
-   SHARED PAGE BACKGROUND
-========================= */
-
-.page-hero-bg {
-  min-height: 100vh;
-
-  background:
-    linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
-    url("https://images.pexels.com/photos/4094697/pexels-photo-4094697.jpeg")
-      center / cover no-repeat;
-
-  background-attachment: fixed;
-}
-/* =========================
-   HERO WRAPPER
-========================= */
-
-.hero-wrapper {
+.landing-hero-content {
   position: relative;
-  margin-bottom: 180px; /* space after floating cards */
+  z-index: 2;
+  width: min(100%, 900px);
+  text-align: center;
 }
 
-/* =========================
-   HERO IMAGE + OVERLAY
-========================= */
+.landing-hero-title {
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1.08;
+  margin-bottom: 1.2rem;
+  text-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+}
+
+.landing-hero-subtitle {
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  line-height: 1.7;
+  max-width: 62ch;
+  margin: 0 auto;
+  opacity: 0.95;
+  text-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+}
 
 .hero-bg-img {
   position: absolute;
@@ -308,40 +54,131 @@ body { padding-top: 0; }
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.35);
   z-index: 1;
-}
-
-/* =========================
-   ROLES OVERLAY
-========================= */
-
-.roles-overlay {
-  position: absolute;
-  bottom: 100px; /* controls overlap */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  z-index: 5;
+  background:
+    linear-gradient(180deg, rgba(3, 10, 7, 0.2), rgba(3, 10, 7, 0.5)),
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.05), transparent 40%);
 }
 
 .roles {
-  background: transparent;
-  padding: 0;
-}
-.roles-overlay .roles-title {
-  color: #fff;
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  background: linear-gradient(180deg, rgba(243, 248, 244, 0), rgba(243, 248, 244, 1) 18%);
+  padding: 0 0 96px;
 }
 
+.roles-overlay {
+  margin-top: clamp(-124px, -10vw, -84px);
+}
 
-/* =========================
-   MOBILE FIX
-========================= */
+.container {
+  width: min(100%, 1200px);
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 24px);
+}
+
+.roles-title {
+  text-align: center;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 600;
+  margin-bottom: 1.75rem;
+  color: #ffffff;
+  text-shadow: 0 16px 32px rgba(0, 0, 0, 0.24);
+}
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: clamp(18px, 2vw, 28px);
+}
+
+.role-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(245, 248, 245, 0.96));
+  border-radius: 24px;
+  padding: clamp(24px, 3vw, 36px);
+  text-align: center;
+  box-shadow:
+    0 26px 60px rgba(15, 23, 42, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+
+.role-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 32px 72px rgba(15, 23, 42, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.role-card img {
+  width: clamp(84px, 10vw, 112px);
+  height: clamp(84px, 10vw, 112px);
+  object-fit: contain;
+  margin: 0 auto 1.25rem;
+}
+
+.role-card h3 {
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+  font-weight: 700;
+  margin-bottom: 0.7rem;
+  color: var(--text-dark);
+}
+
+.role-card p {
+  font-size: 1rem;
+  color: var(--text-gray);
+}
 
 @media (max-width: 768px) {
+  .landing-hero {
+    min-height: 620px;
+    align-items: flex-end;
+    padding-top: 120px;
+    padding-bottom: 96px;
+  }
+
+  .landing-hero-title {
+    font-size: clamp(2.2rem, 10vw, 3.4rem);
+  }
+
+  .landing-hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .roles {
+    padding-bottom: 72px;
+    background: linear-gradient(180deg, rgba(243, 248, 244, 0.2), rgba(243, 248, 244, 1) 20%);
+  }
+
   .roles-overlay {
-    position: static;
-    transform: none;
-    margin-top: -80px;
+    margin-top: -48px;
+  }
+
+  .roles-title {
+    color: #17351f;
+    text-shadow: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-hero-title br {
+    display: none;
+  }
+
+  .landing-hero {
+    min-height: 560px;
+    padding-inline: 16px;
+    padding-bottom: 72px;
+  }
+
+  .roles-overlay {
+    margin-top: -32px;
+  }
+
+  .role-card {
+    border-radius: 20px;
   }
 }

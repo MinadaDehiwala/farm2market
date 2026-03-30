@@ -1,0 +1,98 @@
+.maintenance-shell {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(254, 215, 170, 0.2), transparent 36%),
+    radial-gradient(circle at bottom right, rgba(45, 212, 191, 0.22), transparent 32%),
+    linear-gradient(145deg, #08111b 0%, #111827 45%, #1c1917 100%);
+}
+
+.maintenance-orbit {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(0);
+  opacity: 0.65;
+}
+
+.maintenance-orbit-a {
+  width: 24rem;
+  height: 24rem;
+  top: -6rem;
+  right: -6rem;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.42), transparent 66%);
+}
+
+.maintenance-orbit-b {
+  width: 20rem;
+  height: 20rem;
+  bottom: -5rem;
+  left: -4rem;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.36), transparent 70%);
+}
+
+.maintenance-card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 42rem);
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 2rem;
+  background: rgba(7, 12, 22, 0.74);
+  box-shadow: 0 30px 70px rgba(2, 6, 23, 0.5);
+  backdrop-filter: blur(22px);
+  color: #eff6ff;
+}
+
+.maintenance-card h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 0.95;
+}
+
+.maintenance-card p {
+  margin: 0;
+  color: rgba(226, 232, 240, 0.88);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.maintenance-eyebrow {
+  margin-bottom: 1rem !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #fbbf24 !important;
+}
+
+.maintenance-actions {
+  margin-top: 1.75rem;
+}
+
+.maintenance-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9rem 1.25rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f97316, #fb7185);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 14px 28px rgba(249, 115, 22, 0.28);
+}
+
+@media (max-width: 640px) {
+  .maintenance-shell {
+    padding: 1rem;
+  }
+
+  .maintenance-card {
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+  }
+}

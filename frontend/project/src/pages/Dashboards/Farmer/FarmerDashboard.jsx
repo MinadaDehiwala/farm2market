@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { collection, query, where, onSnapshot, orderBy } from "firebase/firestore";
 import { db } from "../../../js/firebase";
 import { useAuth } from "../../../state/authStore";
+import { useRuntimeConfig } from "../../../state/runtimeConfigStore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { APP_ENV } from "../../../js/env";
 import { respondToOrder, toFirebaseCallableMessage } from "../../../js/orderThreadApi";
 import { toOrderStatusLabel } from "../../../js/orders";
 
@@ -20,6 +20,7 @@ const toModelKey = (value) =>
 
 export default function FarmerDashboard() {
   const { user } = useAuth();
+  const { features } = useRuntimeConfig();
   const navigate = useNavigate();
 
   const [stocks, setStocks] = useState([]);
@@ -49,7 +50,7 @@ export default function FarmerDashboard() {
         const data = snap.docs.map((d) => ({
           id: d.id,
           ...d.data(),
-        }));
+        })).filter((stock) => !stock.archivedAt);
         setStocks(data);
         setLoading(false);
       },
@@ -63,7 +64,7 @@ export default function FarmerDashboard() {
   }, [user]);
 
   useEffect(() => {
-    if (!APP_ENV.FEATURE_ORDER_THREADS || !user) {
+    if (!features.orderThreadsEnabled || !user) {
       setIncomingOrders([]);
       return;
     }
@@ -79,7 +80,9 @@ export default function FarmerDashboard() {
       q,
       (snap) => {
         setIncomingOrders(
-          snap.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }))
+          snap.docs
+            .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }))
+            .filter((order) => !order.archivedAt)
         );
       },
       () => {
@@ -88,7 +91,7 @@ export default function FarmerDashboard() {
     );
 
     return () => unsub();
-  }, [user]);
+  }, [features.orderThreadsEnabled, user]);
 
   const totalQuantity = stocks.reduce(
     (sum, s) => sum + Number(s.quantity || 0),
@@ -98,6 +101,7 @@ export default function FarmerDashboard() {
   const marketsCovered = new Set(stocks.map((s) => s.market)).size;
 
   const goToPrediction = (veg, market) => {
+    if (!features.predictionsEnabled) return;
     navigate(
       `/dashboard/predictions?veg=${encodeURIComponent(
         toModelKey(veg)
@@ -154,7 +158,7 @@ export default function FarmerDashboard() {
         </div>
       </div>
 
-      {APP_ENV.FEATURE_ORDER_THREADS && (
+      {features.orderThreadsEnabled && (
         <div className="farmer-table-card liquid-glass">
           <div className="farmer-table-header">
             <h2>Incoming Order Requests</h2>
@@ -259,11 +263,17 @@ export default function FarmerDashboard() {
                 {stocks.map((s) => (
                   <tr
                     key={s.id}
-                    className="clickable-row"
+                    className={features.predictionsEnabled ? "clickable-row" : ""}
                     onClick={() =>
-                      goToPrediction(s.vegetable, s.market)
+                      features.predictionsEnabled
+                        ? goToPrediction(s.vegetable, s.market)
+                        : undefined
                     }
-                    title="View price prediction"
+                    title={
+                      features.predictionsEnabled
+                        ? "View price prediction"
+                        : "Predictions are disabled"
+                    }
                   >
                     <td>{s.vegetable}</td>
                     <td>{s.market}</td>

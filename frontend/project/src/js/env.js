@@ -61,5 +61,16 @@ export const APP_ENV = {
     readEnv("VITE_FIREBASE_STORAGE_BUCKET") ||
     `${readEnv("VITE_FIREBASE_PROJECT_ID")}.appspot.com`,
   FIREBASE_FUNCTIONS_REGION: readEnv("VITE_FIREBASE_FUNCTIONS_REGION") || "asia-south1",
+  FEATURE_AI_CHAT: readBooleanEnv("VITE_FEATURE_AI_CHAT", true),
   FEATURE_ORDER_THREADS: readBooleanEnv("VITE_FEATURE_ORDER_THREADS", true),
+  FEATURE_PREDICTIONS: readBooleanEnv("VITE_FEATURE_PREDICTIONS", true),
+  FEATURE_SIGNUP: readBooleanEnv("VITE_FEATURE_SIGNUP", true),
+  FEATURE_CONTACT_FORM: readBooleanEnv("VITE_FEATURE_CONTACT_FORM", true),
+  SITE_MAINTENANCE_ENABLED: readBooleanEnv("VITE_SITE_MAINTENANCE_ENABLED", false),
+  SITE_MAINTENANCE_TITLE:
+    readEnv("VITE_SITE_MAINTENANCE_TITLE") ||
+    "Farm2Market is under maintenance",
+  SITE_MAINTENANCE_MESSAGE:
+    readEnv("VITE_SITE_MAINTENANCE_MESSAGE") ||
+    "We are making updates right now. Please check back soon.",
 };

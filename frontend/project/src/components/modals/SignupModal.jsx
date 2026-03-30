@@ -4,6 +4,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../../js/firebase";
 import { toast } from "sonner";
+import { useRuntimeConfig } from "../../state/runtimeConfigStore";
 
 /* =========================
    HELPERS
@@ -47,6 +48,7 @@ function firebaseErrorMessage(err) {
 
 export default function SignupModal({ onClose, onLogin }) {
   const [loading, setLoading] = useState(false);
+  const { features } = useRuntimeConfig();
 
   // This is where signup happens. We break it into 3 parts:
   // 1) AUTH - create user in Firebase Auth (no retry, critical)
@@ -56,6 +58,11 @@ export default function SignupModal({ onClose, onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
+
+    if (!features.signupEnabled) {
+      toast.error("Signup is currently disabled.");
+      return;
+    }
 
     const form = e.target;
     const firstName = form.firstName.value.trim();
@@ -108,6 +115,8 @@ export default function SignupModal({ onClose, onLogin }) {
           email: user.email,
           phone,
           role,
+          isAdmin: false,
+          accountStatus: "active",
           avatarUrl: "",
           avgResponseMin: role === "farmer" ? 10 : role === "transporter" ? 12 : 8,
           completedDeliveries: 0,

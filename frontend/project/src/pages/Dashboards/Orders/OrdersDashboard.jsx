@@ -10,8 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { db } from "../../../js/firebase";
-import { APP_ENV } from "../../../js/env";
 import { useAuth } from "../../../state/authStore";
+import { useRuntimeConfig } from "../../../state/runtimeConfigStore";
 import { respondToOrder, toFirebaseCallableMessage } from "../../../js/orderThreadApi";
 import { formatTimestamp, toOrderStatusLabel } from "../../../js/orders";
 
@@ -19,6 +19,7 @@ import "../../../styles/orders-dashboard.css";
 
 export default function OrdersDashboard() {
   const { user, role } = useAuth();
+  const { features } = useRuntimeConfig();
   const navigate = useNavigate();
 
   const [orders, setOrders] = useState([]);
@@ -27,7 +28,7 @@ export default function OrdersDashboard() {
   const [busyOrderId, setBusyOrderId] = useState("");
 
   useEffect(() => {
-    if (!APP_ENV.FEATURE_ORDER_THREADS || !user || !role) {
+    if (!features.orderThreadsEnabled || !user || !role) {
       setOrders([]);
       setLoading(false);
       return;
@@ -46,7 +47,11 @@ export default function OrdersDashboard() {
     const unsub = onSnapshot(
       q,
       (snap) => {
-        setOrders(snap.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() })));
+        setOrders(
+          snap.docs
+            .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }))
+            .filter((order) => !order.archivedAt)
+        );
         setLoading(false);
       },
       () => {
@@ -56,7 +61,7 @@ export default function OrdersDashboard() {
     );
 
     return () => unsub();
-  }, [role, user]);
+  }, [features.orderThreadsEnabled, role, user]);
 
   const handleRespond = async (orderId, action) => {
     try {
@@ -75,10 +80,10 @@ export default function OrdersDashboard() {
     }
   };
 
-  if (!APP_ENV.FEATURE_ORDER_THREADS) {
+  if (!features.orderThreadsEnabled) {
     return (
       <div className="dashboard-container orders-dashboard">
-        <p>Order threads are disabled in this environment.</p>
+        <p>Order threads are currently disabled by the admin.</p>
       </div>
     );
   }

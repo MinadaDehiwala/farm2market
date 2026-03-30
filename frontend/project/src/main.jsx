@@ -5,7 +5,9 @@ import { Toaster } from "sonner";
 
 import router from "./app/router.jsx";
 import { AuthProvider } from "./state/authStore.jsx";
+import { RuntimeConfigProvider } from "./state/runtimeConfigStore.jsx";
 import AccountSetupGate from "./components/ui/AccountSetupGate.jsx";
+import "./styles/base.css";
 import "./styles/account-setup.css";
 
 
@@ -27,11 +29,13 @@ if (!rootElement) {
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <AuthProvider>
-      <AccountSetupGate>
-        <React.Suspense fallback={<RootFallback />}>
-          <RouterProvider router={router} />
-        </React.Suspense>
-      </AccountSetupGate>
+      <RuntimeConfigProvider>
+        <AccountSetupGate>
+          <React.Suspense fallback={<RootFallback />}>
+            <RouterProvider router={router} />
+          </React.Suspense>
+        </AccountSetupGate>
+      </RuntimeConfigProvider>
 
       <Toaster richColors position="top-right" closeButton duration={4000} />
     </AuthProvider>

@@ -57,8 +57,12 @@ export function AuthProvider({ children }) {
   const mountedRef = useRef(true);
 
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [role, setRole] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [accountStatus, setAccountStatus] = useState("active");
   const [loading, setLoading] = useState(true);
+  const [justLoggedOut, setJustLoggedOut] = useState(false);
 
   // UI states
   const [setupState, setSetupState] = useState("idle");
@@ -73,7 +77,10 @@ export function AuthProvider({ children }) {
       /* SIGNED OUT */
       if (!firebaseUser) {
         setUser(null);
+        setProfile(null);
         setRole(null);
+        setIsAdmin(false);
+        setAccountStatus("active");
         setLoading(false);
         setSetupState("idle");
         return;
@@ -81,7 +88,11 @@ export function AuthProvider({ children }) {
 
       /* AUTHENTICATED BUT ACCOUNT NOT READY */
       setUser(firebaseUser);
+      setProfile(null);
       setRole(null);
+      setIsAdmin(false);
+      setAccountStatus("active");
+      setJustLoggedOut(false);
       setLoading(true);
       setSetupState("loading");
 
@@ -98,21 +109,43 @@ export function AuthProvider({ children }) {
 
         if (!mountedRef.current) return;
 
-        const storedRole = snap.data()?.role;
+        const data = snap.data() || {};
+        const storedRole = data.role;
+        const nextIsAdmin = data.isAdmin === true;
+        const nextAccountStatus =
+          data.accountStatus === "disabled" ? "disabled" : "active";
 
         if (
           storedRole === "buyer" ||
           storedRole === "farmer" ||
           storedRole === "transporter"
         ) {
+          if (nextAccountStatus === "disabled") {
+            await signOut(auth);
+            setUser(null);
+            setProfile(null);
+            setRole(null);
+            setIsAdmin(false);
+            setAccountStatus("disabled");
+            setLoading(false);
+            setSetupState("idle");
+            return;
+          }
+
+          setProfile(data);
           setRole(storedRole);
+          setIsAdmin(nextIsAdmin);
+          setAccountStatus(nextAccountStatus);
           setLoading(false);
           setSetupState("idle");
         } else {
           console.error("Invalid role detected:", storedRole);
           await signOut(auth);
           setUser(null);
+          setProfile(null);
           setRole(null);
+          setIsAdmin(false);
+          setAccountStatus("active");
           setLoading(false);
           setSetupState("idle");
         }
@@ -126,6 +159,8 @@ export function AuthProvider({ children }) {
         }
 
         setRole(null);
+        setProfile(null);
+        setIsAdmin(false);
         setLoading(true);
       } finally {
         clearTimeout(timeout);
@@ -140,14 +175,26 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
+      if (mountedRef.current) {
+        setJustLoggedOut(true);
+      }
       await signOut(auth);
     } finally {
       if (mountedRef.current) {
         setUser(null);
+        setProfile(null);
         setRole(null);
+        setIsAdmin(false);
+        setAccountStatus("active");
         setLoading(false);
         setSetupState("idle");
       }
+    }
+  };
+
+  const clearJustLoggedOut = () => {
+    if (mountedRef.current) {
+      setJustLoggedOut(false);
     }
   };
 
@@ -155,10 +202,15 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
+        profile,
         role,
+        isAdmin,
+        accountStatus,
         loading,
         setupState,
+        justLoggedOut,
         logout,
+        clearJustLoggedOut,
 
         // helpers
         isBuyer: role === "buyer",

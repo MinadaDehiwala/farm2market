@@ -12,8 +12,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 import { db } from "../../../js/firebase";
-import { APP_ENV } from "../../../js/env";
 import { useAuth } from "../../../state/authStore";
+import { useRuntimeConfig } from "../../../state/runtimeConfigStore";
 import {
   respondToOrder,
   sendThreadMessage,
@@ -50,6 +50,7 @@ export default function OrderDetailDashboard() {
   const { orderId } = useParams();
   const navigate = useNavigate();
   const { user, role } = useAuth();
+  const { features } = useRuntimeConfig();
 
   const [order, setOrder] = useState(null);
   const [stock, setStock] = useState(null);
@@ -64,7 +65,7 @@ export default function OrderDetailDashboard() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!APP_ENV.FEATURE_ORDER_THREADS || !orderId) {
+    if (!features.orderThreadsEnabled || !orderId) {
       setLoading(false);
       return;
     }
@@ -81,6 +82,12 @@ export default function OrderDetailDashboard() {
         }
 
         const data = { id: snap.id, ...snap.data() };
+        if (data.archivedAt) {
+          setOrder(null);
+          setError("This order has been archived by an admin.");
+          setLoading(false);
+          return;
+        }
         setOrder(data);
         setError("");
         setLoading(false);
@@ -92,13 +99,19 @@ export default function OrderDetailDashboard() {
     );
 
     return () => unsub();
-  }, [orderId]);
+  }, [features.orderThreadsEnabled, orderId]);
 
   useEffect(() => {
     if (!order?.stockId) return;
 
     const unsub = onSnapshot(doc(db, "stocks", order.stockId), (snap) => {
-      setStock(snap.exists() ? { id: snap.id, ...snap.data() } : null);
+      if (!snap.exists()) {
+        setStock(null);
+        return;
+      }
+
+      const nextStock = { id: snap.id, ...snap.data() };
+      setStock(nextStock.archivedAt ? null : nextStock);
     });
 
     return () => unsub();
@@ -114,7 +127,8 @@ export default function OrderDetailDashboard() {
 
     const unsub = onSnapshot(q, (snap) => {
       const first = snap.docs[0];
-      setTransportRequest(first ? { id: first.id, ...first.data() } : null);
+      const nextTransport = first ? { id: first.id, ...first.data() } : null;
+      setTransportRequest(nextTransport?.archivedAt ? null : nextTransport);
     });
 
     return () => unsub();
@@ -248,10 +262,10 @@ export default function OrderDetailDashboard() {
     );
   };
 
-  if (!APP_ENV.FEATURE_ORDER_THREADS) {
+  if (!features.orderThreadsEnabled) {
     return (
       <div className="dashboard-container order-detail-dashboard">
-        <p>Order threads are disabled in this environment.</p>
+        <p>Order threads are currently disabled by the admin.</p>
       </div>
     );
   }

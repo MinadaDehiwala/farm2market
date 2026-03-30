@@ -9,6 +9,13 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
 /* ================= KPI CARDS ================= */
 
 .buyer-stats {
@@ -198,7 +205,8 @@
 
 /* ================= BUTTONS ================= */
 
-.btn {
+.buyer-dashboard .btn,
+.buyer-modal .btn {
   padding: 10px 14px;
   border-radius: 8px;
   border: none;
@@ -206,12 +214,14 @@
   font-weight: 600;
 }
 
-.btn.primary {
+.buyer-dashboard .btn.primary,
+.buyer-modal .btn.primary {
   background: #2e7d32;
   color: #fff;
 }
 
-.btn.secondary {
+.buyer-dashboard .btn.secondary,
+.buyer-modal .btn.secondary {
   background: #eeeeee;
   color: #222;
 }
@@ -242,6 +252,8 @@
   border-radius: 12px;
   width: 100%;
   max-width: 420px;
+  max-height: min(88vh, 720px);
+  overflow-y: auto;
   color: #111; /* FIX: force dark text */
 }
 
@@ -286,13 +298,42 @@
 
 /* ================= MOBILE ================= */
 
+@media (max-width: 900px) {
+  .dashboard-header,
+  .price-chart-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .price-chart-controls {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .price-chart-controls select {
+    flex: 1 1 180px;
+    min-width: 0;
+  }
+}
+
 @media (max-width: 640px) {
   .buyer-stat-card h3 {
     font-size: 2rem;
   }
 
-  .price-chart-header {
+  .stock-actions {
     flex-direction: column;
-    align-items: stretch;
+  }
+
+  .buyer-modal-overlay {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .buyer-stat-card,
+  .price-chart,
+  .stock-card {
+    padding-inline: 18px;
   }
 }

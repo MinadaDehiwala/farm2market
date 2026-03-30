@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 import { db } from "../../../js/firebase";
 import { useAuth } from "../../../state/authStore";
-import { APP_ENV } from "../../../js/env";
+import { useRuntimeConfig } from "../../../state/runtimeConfigStore";
 import {
   claimTransportRequest,
   toFirebaseCallableMessage,
@@ -27,6 +27,7 @@ import "../../../styles/transporter-dashboard.css";
 
 export default function TransporterDashboard() {
   const { user } = useAuth();
+  const { features } = useRuntimeConfig();
   const navigate = useNavigate();
 
   const [openJobs, setOpenJobs] = useState([]);
@@ -49,14 +50,16 @@ export default function TransporterDashboard() {
     );
 
     return onSnapshot(q, (snap) => {
-      let rows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      if (APP_ENV.FEATURE_ORDER_THREADS) {
+      let rows = snap.docs
+        .map((d) => ({ id: d.id, ...d.data() }))
+        .filter((row) => !row.archivedAt);
+      if (features.orderThreadsEnabled) {
         rows = rows.filter((row) => !!row.orderId);
       }
 
       setActiveJob(rows[0] || null);
     });
-  }, [user]);
+  }, [features.orderThreadsEnabled, user]);
 
   /* ================= OPEN JOBS ================= */
   useEffect(() => {
@@ -71,13 +74,15 @@ export default function TransporterDashboard() {
     );
 
     return onSnapshot(q, (snap) => {
-      let rows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      if (APP_ENV.FEATURE_ORDER_THREADS) {
+      let rows = snap.docs
+        .map((d) => ({ id: d.id, ...d.data() }))
+        .filter((row) => !row.archivedAt);
+      if (features.orderThreadsEnabled) {
         rows = rows.filter((row) => !!row.orderId);
       }
       setOpenJobs(rows);
     });
-  }, [user, activeJob]);
+  }, [features.orderThreadsEnabled, user, activeJob]);
 
   /* ================= COMPLETED JOBS ================= */
   useEffect(() => {
@@ -90,13 +95,15 @@ export default function TransporterDashboard() {
     );
 
     return onSnapshot(q, (snap) => {
-      let rows = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      if (APP_ENV.FEATURE_ORDER_THREADS) {
+      let rows = snap.docs
+        .map((d) => ({ id: d.id, ...d.data() }))
+        .filter((row) => !row.archivedAt);
+      if (features.orderThreadsEnabled) {
         rows = rows.filter((row) => !!row.orderId);
       }
       setCompletedJobs(rows);
     });
-  }, [user]);
+  }, [features.orderThreadsEnabled, user]);
 
   /* ================= LOAD ORDER CONTACT CONTEXT ================= */
   useEffect(() => {

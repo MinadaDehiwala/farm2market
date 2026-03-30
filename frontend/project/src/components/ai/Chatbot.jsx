@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { fetchChatReply, toUserMessage } from "../../js/api";
+import { useRuntimeConfig } from "../../state/runtimeConfigStore";
 import "../../styles/components/chatbot.css";
 
 const MOBILE_QUERY = "(max-width: 768px)";
@@ -55,6 +56,7 @@ const getStarterPrompts = (pathname) => {
 
 export default function Chatbot() {
   const location = useLocation();
+  const { features } = useRuntimeConfig();
   const messageCountRef = useRef(0);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
@@ -162,6 +164,11 @@ export default function Chatbot() {
     const prompt = rawPrompt.trim();
     if (!prompt || sendingRef.current) return;
 
+    if (!features.aiChatEnabled) {
+      appendAssistantMessage("AI chat is currently turned off by the admin.", "error");
+      return;
+    }
+
     const requestId = requestIdRef.current + 1;
     requestIdRef.current = requestId;
     sendingRef.current = true;
@@ -214,6 +221,10 @@ export default function Chatbot() {
       ),
     ]);
   };
+
+  if (!features.aiChatEnabled) {
+    return null;
+  }
 
   return (
     <div className={`chatbot-root ${open ? "open" : ""}`}>

@@ -12,7 +12,7 @@ export default function Landing() {
   return (
     <section className="hero-wrapper">
       {/* Hero */}
-      <section className="hero">
+      <section className="landing-hero">
         <img
           src="https://images.pexels.com/photos/4094697/pexels-photo-4094697.jpeg"
           alt="Agriculture background"
@@ -21,13 +21,13 @@ export default function Landing() {
 
         <div className="hero-overlay" />
 
-        <div className="hero-content">
-          <h1 className="hero-title">
+        <div className="landing-hero-content">
+          <h1 className="landing-hero-title">
             Empowering Farmers and Buyers.<br />
             Transforming Agriculture.
           </h1>
 
-          <p className="hero-subtitle">
+          <p className="landing-hero-subtitle">
             Bridging the gap between farmers and markets with real-time data
             and predictive insights.
           </p>

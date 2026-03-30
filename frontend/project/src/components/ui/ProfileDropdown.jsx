@@ -4,6 +4,7 @@ import "../../styles/components/profile-dropdown.css";
 export default function ProfileDropdown({
   trigger,
   onViewProfile,
+  onAdmin,
   onLogout,
 }) {
   return (
@@ -24,6 +25,15 @@ export default function ProfileDropdown({
           >
             View Profile
           </DropdownMenu.Item>
+
+          {typeof onAdmin === "function" && (
+            <DropdownMenu.Item
+              className="dropdown-item"
+              onSelect={onAdmin}
+            >
+              Admin Center
+            </DropdownMenu.Item>
+          )}
 
           <DropdownMenu.Separator className="dropdown-separator" />
 

@@ -134,7 +134,7 @@
 }
 
 /* ================= BUTTONS (WHITE) ================= */
-.btn {
+.login-card .btn {
   width: 100%;
   padding: 16px;
   border-radius: 12px;
@@ -152,12 +152,12 @@
     inset 0 1px 1px rgba(255,255,255,0.6);
 }
 
-.btn:hover {
+.login-card .btn:hover {
   background: rgba(255,255,255,1);
   transform: translateY(-1px);
 }
 
-.btn:active {
+.login-card .btn:active {
   transform: translateY(0);
 }
 
@@ -223,4 +223,24 @@
 .input-wrapper select option {
   color: #111;
   background: #fff;
+}
+
+@media (max-width: 640px) {
+  .auth-overlay {
+    padding: 16px;
+    align-items: flex-end;
+  }
+
+  .login-card {
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+
+  .login-header {
+    margin-bottom: 24px;
+  }
+
+  .login-header h2 {
+    font-size: 1.7rem;
+  }
 }

@@ -8,6 +8,10 @@
   gap: 28px;
 }
 
+.prediction-dashboard > * {
+  min-width: 0;
+}
+
 /* ================= HEADER ================= */
 
 .prediction-dashboard .dashboard-title {
@@ -32,6 +36,10 @@
   gap: 14px;
   padding: 20px;
   align-items: center;
+}
+
+.controls-card > * {
+  min-width: 0;
 }
 
 .controls-card select,
@@ -77,8 +85,8 @@
 /* ================= CHART ================= */
 
 .chart-card {
-  padding: 28px;
-  min-height: 420px;
+  padding: clamp(20px, 3vw, 28px);
+  min-height: clamp(320px, 60vh, 420px);
   position: relative;
 }
 
@@ -204,11 +212,20 @@
   .controls-card {
     grid-template-columns: 1fr 1fr;
   }
+
+  .controls-card .predict-btn {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (max-width: 640px) {
   .controls-card {
     grid-template-columns: 1fr;
+  }
+
+  .controls-card .predict-btn {
+    grid-column: auto;
+    width: 100%;
   }
 }
 
@@ -225,7 +242,7 @@
 }
 
 .price-value {
-  font-size: 48px;
+  font-size: clamp(2.4rem, 9vw, 3rem);
   font-weight: 800;
   color: #4ade80;
   line-height: 1.1;

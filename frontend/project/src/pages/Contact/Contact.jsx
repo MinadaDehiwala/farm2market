@@ -1,14 +1,23 @@
 import "../../styles/contact.css";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { useState } from "react";
+import { useRuntimeConfig } from "../../state/runtimeConfigStore";
 
 export default function Contact() {
+  const { features } = useRuntimeConfig();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
   const [dialogType, setDialogType] = useState("success"); // success | error
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!features.contactFormEnabled) {
+      setDialogType("error");
+      setDialogMessage("Contact submissions are currently disabled.");
+      setDialogOpen(true);
+      return;
+    }
+
     const form = e.target;
 
     const data = {
@@ -105,13 +114,23 @@ export default function Contact() {
             </div>
           </div>
 
-          <form className="contact-form glass" onSubmit={handleSubmit}>
-            <input name="name" type="text" placeholder="Your Name" required />
-            <input name="email" type="email" placeholder="Your Email" required />
-            <input name="subject" type="text" placeholder="Subject" required />
-            <textarea name="message" placeholder="Your Message" rows="6" required />
-            <button className="btn btn-primary btn-full">Send Message</button>
-          </form>
+          {features.contactFormEnabled ? (
+            <form className="contact-form glass" onSubmit={handleSubmit}>
+              <input name="name" type="text" placeholder="Your Name" required />
+              <input name="email" type="email" placeholder="Your Email" required />
+              <input name="subject" type="text" placeholder="Subject" required />
+              <textarea name="message" placeholder="Your Message" rows="6" required />
+              <button className="btn btn-primary btn-full">Send Message</button>
+            </form>
+          ) : (
+            <div className="contact-form glass">
+              <h3>Contact form disabled</h3>
+              <p>
+                An admin has temporarily turned off new contact submissions.
+                Please check back later.
+              </p>
+            </div>
+          )}
         </div>
       </section>
     </>

@@ -1,169 +1,170 @@
-/* RESET */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+.about-page {
+  min-height: 100dvh;
+  background:
+    linear-gradient(180deg, rgba(6, 10, 8, 0.1), rgba(6, 10, 8, 0.72)),
+    linear-gradient(180deg, #f4f8f4 0%, #dce9de 45%, #0b120e 100%);
 }
 
-/* =========================
-   HERO
-========================= */
-
-.hero {
-  min-height: 100vh;
+.about-hero {
+  min-height: clamp(560px, 82vh, 760px);
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* basically zero top padding now */
-  padding-top: 0;
-
+  padding: clamp(128px, 16vw, 168px) 20px clamp(180px, 18vw, 220px);
   background:
-    linear-gradient(
-      to bottom,
-      rgba(0,0,0,0.45),
-      rgba(0,0,0,0.18),
-      rgba(0,0,0,0.55)
-    ),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.58)),
     url("https://images.pexels.com/photos/4094697/pexels-photo-4094697.jpeg")
       center / cover no-repeat;
 }
 
-.hero-content {
-  max-width: 900px;
-  padding: 0 20px;
+.about-hero-content {
+  width: min(100%, 840px);
   text-align: center;
   color: #fff;
-
-  /* 🔥 BIG PUSH */
-  transform: translateY(-240px);
 }
 
-.hero-eyebrow {
+.about-hero-eyebrow {
   display: inline-block;
-  margin-bottom: 10px;
-  font-size: 0.75rem;
+  margin-bottom: 0.8rem;
+  font-size: 0.78rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   opacity: 0.9;
 }
 
-.hero-content h2 {
-  font-size: clamp(2.6rem, 5vw, 3.4rem);
-  margin-bottom: 14px;
+.about-hero-content h2 {
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  margin-bottom: 0.95rem;
+  line-height: 1.06;
 }
 
-.hero-content p {
-  font-size: 1rem;
+.about-hero-content p {
+  font-size: clamp(1rem, 1.8vw, 1.1rem);
   opacity: 0.95;
-  max-width: 680px;
+  max-width: 62ch;
   margin: 0 auto;
 }
 
-/* =========================
-   FLOATING CARDS
-========================= */
-
-.content {
-  max-width: 1200px;
-
-  /* 🔥 PULL CARDS HARD INTO HERO */
-  margin: -420px auto 10px;
-
-  padding: 0 20px;
+.about-content {
+  width: min(100%, 1200px);
+  margin: clamp(-112px, -9vw, -82px) auto 0;
+  padding: 0 clamp(16px, 4vw, 24px);
+  position: relative;
+  z-index: 2;
 }
 
-.card-grid {
+.about-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 26px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
 }
 
-.info-card {
-  background: rgba(255,255,255,0.94);
+.about-info-card {
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(18px);
-  border-radius: 26px;
-  padding: 30px;
-
+  border-radius: 24px;
+  padding: clamp(24px, 3vw, 32px);
   box-shadow:
-    0 40px 90px rgba(0,0,0,0.28),
-    inset 0 1px 0 rgba(255,255,255,0.95);
+    0 24px 60px rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
-.info-card h4 {
-  margin-bottom: 10px;
+.about-info-card h4 {
+  margin-bottom: 0.75rem;
+  font-size: 1.15rem;
 }
 
-/* =========================
-   STATS (INLINE WITH CARDS)
-========================= */
+.about-info-card p,
+.about-info-card li {
+  color: rgba(15, 23, 42, 0.78);
+  line-height: 1.7;
+}
 
-.stats {
-  max-width: 900px;
-
-  /* 🔥 YANK THEM UP */
-  margin: -20px auto 10px;
-  padding-top: 0;
-
+.about-info-card ul {
+  list-style: none;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
-
-  text-align: center;
+  gap: 0.45rem;
 }
 
-.stat strong {
+.about-stats {
+  width: min(100%, 980px);
+  margin: 36px auto 0;
+  padding: 0 clamp(16px, 4vw, 24px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.about-stat {
+  padding: 1.35rem 1rem;
+  border-radius: 22px;
+  text-align: center;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+}
+
+.about-stat strong {
   display: block;
-  font-size: 2.2rem;
+  font-size: clamp(1.85rem, 3vw, 2.3rem);
 }
 
-.stat span {
-  font-size: 0.85rem;
-  opacity: 0.75;
+.about-stat span {
+  display: block;
+  margin-top: 0.35rem;
+  color: rgba(255, 255, 255, 0.78);
 }
 
-/* =========================
-   VISION (ABOVE THE FOLD)
-========================= */
-
-.vision {
-  max-width: 700px;
-
-  /* 🔥 FINAL PULL */
-  margin: -10px auto 0;
-  padding: 0 20px;
-
+.about-vision {
+  width: min(100%, 760px);
+  margin: 32px auto 0;
+  padding: 0 clamp(20px, 4vw, 28px) 88px;
   text-align: center;
+  color: #ffffff;
 }
 
-.vision h3 {
-  font-size: 1.7rem;
-  margin-bottom: 8px;
+.about-vision h3 {
+  font-size: clamp(1.7rem, 3vw, 2rem);
+  margin-bottom: 0.75rem;
 }
 
-.vision p {
-  font-size: 0.95rem;
-  opacity: 0.85;
+.about-vision p {
+  color: rgba(255, 255, 255, 0.84);
+  line-height: 1.8;
 }
 
-/* =========================
-   MAKE LOWER TEXT WHITE
-========================= */
+@media (max-width: 768px) {
+  .about-hero {
+    min-height: 500px;
+    padding-top: 118px;
+    padding-bottom: 104px;
+  }
 
-/* Stats text */
-.stats {
-  color: #fff;
+  .about-content {
+    margin-top: -48px;
+  }
+
+  .about-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .about-vision {
+    padding-bottom: 72px;
+  }
 }
 
-.stat span {
-  color: rgba(255,255,255,0.75);
-}
+@media (max-width: 480px) {
+  .about-hero-content h2 br {
+    display: none;
+  }
 
-/* Vision section text */
-.vision {
-  color: #fff;
-}
+  .about-content {
+    margin-top: -28px;
+  }
 
-.vision p {
-  color: rgba(255,255,255,0.8);
+  .about-info-card,
+  .about-stat {
+    border-radius: 18px;
+  }
 }

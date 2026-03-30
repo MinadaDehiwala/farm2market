@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useState } from "react";
 
-export default function LoginModal({ onClose, onSignup }) {
+export default function LoginModal({ onClose, onSignup, allowSignup = true }) {
   const navigate = useNavigate();
   const [showReset, setShowReset] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
@@ -36,7 +36,12 @@ export default function LoginModal({ onClose, onSignup }) {
         return;
       }
 
-      const { role } = snap.data();
+      const { role, accountStatus } = snap.data();
+
+      if (accountStatus === "disabled") {
+        toast.error("This account has been disabled by an admin");
+        return;
+      }
 
       if (role === "farmer") {
         navigate("/dashboard/farmer", { replace: true });
@@ -111,20 +116,22 @@ export default function LoginModal({ onClose, onSignup }) {
               </button>
             </form>
 
-            <div className="signup-link">
-              <p>
-                Don&apos;t have an account?{" "}
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onSignup();
-                  }}
-                >
-                  Signup
-                </a>
-              </p>
-            </div>
+            {allowSignup && typeof onSignup === "function" && (
+              <div className="signup-link">
+                <p>
+                  Don&apos;t have an account?{" "}
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onSignup();
+                    }}
+                  >
+                    Signup
+                  </a>
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -18,7 +18,7 @@
 }
 
 /* Fix heading breaking into two lines */
-.dashboard-title {
+.stock-dashboard .dashboard-title {
   white-space: nowrap;
 }
 
@@ -35,7 +35,8 @@
 
 .stock-card {
   padding: 32px;
-  max-width: 520px;
+  width: 100%;
+  max-width: none;
   height: 100%;
 }
 
@@ -160,6 +161,32 @@
 
 @media (max-width: 1024px) {
   .stock-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .stock-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .photo-preview-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .stock-card,
+  .stock-info {
+    padding: 22px;
+  }
+
+  .stock-dashboard .dashboard-title {
+    white-space: normal;
+  }
+
+  .photo-preview-grid {
     grid-template-columns: 1fr;
   }
 }

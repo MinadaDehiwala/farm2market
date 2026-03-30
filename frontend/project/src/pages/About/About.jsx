@@ -2,11 +2,11 @@ import "../../styles/about.css";
 
 export default function About() {
   return (
-    <>
+    <div className="about-page">
       {/* HERO */}
-      <section className="hero">
-        <div className="hero-content">
-          <span className="hero-eyebrow">About Farm2Market</span>
+      <section className="about-hero">
+        <div className="about-hero-content">
+          <span className="about-hero-eyebrow">About Farm2Market</span>
           <h2>
             Empowering Farmers.<br />
             Transforming Agriculture.
@@ -19,9 +19,9 @@ export default function About() {
       </section>
 
       {/* CARDS */}
-      <section className="content">
-        <div className="card-grid">
-          <div className="info-card">
+      <section className="about-content">
+        <div className="about-card-grid">
+          <div className="about-info-card">
             <h4>The Problem</h4>
             <p>
               Farmers often sell blindly, relying on middlemen and outdated
@@ -29,7 +29,7 @@ export default function About() {
             </p>
           </div>
 
-          <div className="info-card">
+          <div className="about-info-card">
             <h4>Our Solution</h4>
             <p>
               Farm2Market provides real-time pricing, predictive analytics,
@@ -37,7 +37,7 @@ export default function About() {
             </p>
           </div>
 
-          <div className="info-card">
+          <div className="about-info-card">
             <h4>The Impact</h4>
             <ul>
               <li>Fairer farmer income</li>
@@ -50,29 +50,29 @@ export default function About() {
       </section>
 
       {/* STATS */}
-      <section className="stats">
-        <div className="stat">
+      <section className="about-stats">
+        <div className="about-stat">
           <strong>100%</strong>
           <span>100% Transparent Pricing</span>
         </div>
-        <div className="stat">
+        <div className="about-stat">
           <strong>0%</strong>
           <span>No Hidden Commissions</span>
         </div>
-        <div className="stat">
+        <div className="about-stat">
           <strong>24/7</strong>
           <span> 24/7 Market Visibility</span>
         </div>
       </section>
 
       {/* VISION */}
-      <section className="vision">
+      <section className="about-vision">
         <h3>Looking Ahead</h3>
         <p>
           Our vision is a future where agriculture is data-driven, fair,
           and sustainable — empowering farmers at every step.
         </p>
       </section>
-    </>
+    </div>
   );
 }
