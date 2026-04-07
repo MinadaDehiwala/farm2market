@@ -1,23 +1,52 @@
 .about-page {
+  --about-overlap: clamp(56px, 9vh, 112px);
+  --about-surface-top: #0a130d;
+  --about-surface-mid: #101d14;
+  --about-surface-bottom: #0b120e;
   min-height: 100dvh;
-  background:
-    linear-gradient(180deg, rgba(6, 10, 8, 0.1), rgba(6, 10, 8, 0.72)),
-    linear-gradient(180deg, #f4f8f4 0%, #dce9de 45%, #0b120e 100%);
+  background: linear-gradient(
+    180deg,
+    var(--about-surface-top) 0%,
+    var(--about-surface-mid) 42%,
+    var(--about-surface-bottom) 100%
+  );
+  overflow-x: clip;
 }
 
 .about-hero {
+  position: relative;
   min-height: clamp(560px, 82vh, 760px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(128px, 16vw, 168px) 20px clamp(180px, 18vw, 220px);
+  padding:
+    clamp(128px, 16vw, 168px)
+    20px
+    calc(clamp(120px, 14vh, 176px) + var(--about-overlap));
   background:
     linear-gradient(to bottom, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.58)),
     url("https://images.pexels.com/photos/4094697/pexels-photo-4094697.jpeg")
       center / cover no-repeat;
 }
 
+.about-hero::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: clamp(120px, 20vh, 220px);
+  background: linear-gradient(
+    180deg,
+    rgba(10, 19, 13, 0) 0%,
+    rgba(10, 19, 13, 0.88) 72%,
+    var(--about-surface-top) 100%
+  );
+  pointer-events: none;
+}
+
 .about-hero-content {
+  position: relative;
+  z-index: 1;
   width: min(100%, 840px);
   text-align: center;
   color: #fff;
@@ -47,7 +76,7 @@
 
 .about-content {
   width: min(100%, 1200px);
-  margin: clamp(-112px, -9vw, -82px) auto 0;
+  margin: calc(var(--about-overlap) * -1) auto 0;
   padding: 0 clamp(16px, 4vw, 24px);
   position: relative;
   z-index: 2;
@@ -135,14 +164,14 @@
 }
 
 @media (max-width: 768px) {
+  .about-page {
+    --about-overlap: 52px;
+  }
+
   .about-hero {
     min-height: 500px;
     padding-top: 118px;
-    padding-bottom: 104px;
-  }
-
-  .about-content {
-    margin-top: -48px;
+    padding-bottom: calc(96px + var(--about-overlap));
   }
 
   .about-stats {
@@ -155,12 +184,12 @@
 }
 
 @media (max-width: 480px) {
-  .about-hero-content h2 br {
-    display: none;
+  .about-page {
+    --about-overlap: 32px;
   }
 
-  .about-content {
-    margin-top: -28px;
+  .about-hero-content h2 br {
+    display: none;
   }
 
   .about-info-card,

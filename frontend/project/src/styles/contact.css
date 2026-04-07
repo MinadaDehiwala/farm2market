@@ -1,7 +1,26 @@
+.contact-page {
+  --contact-overlap: clamp(58px, 9vh, 116px);
+  --contact-surface-top: #0a130d;
+  --contact-surface-mid: #101d14;
+  --contact-surface-bottom: #0b120e;
+  min-height: 100dvh;
+  background: linear-gradient(
+    180deg,
+    var(--contact-surface-top) 0%,
+    var(--contact-surface-mid) 40%,
+    var(--contact-surface-bottom) 100%
+  );
+  overflow-x: clip;
+  padding-bottom: clamp(56px, 8vh, 100px);
+}
+
 .contact-hero {
   position: relative;
   min-height: clamp(500px, 78vh, 760px);
-  padding: clamp(128px, 16vw, 168px) 20px clamp(180px, 20vw, 220px);
+  padding:
+    clamp(128px, 16vw, 168px)
+    20px
+    calc(clamp(118px, 15vh, 190px) + var(--contact-overlap));
   background:
     linear-gradient(to bottom, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.58)),
     url("https://images.pexels.com/photos/4094697/pexels-photo-4094697.jpeg")
@@ -14,6 +33,21 @@
 .contact-hero-overlay {
   position: absolute;
   inset: 0;
+}
+
+.contact-hero::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: clamp(120px, 20vh, 220px);
+  background: linear-gradient(
+    180deg,
+    rgba(10, 19, 13, 0) 0%,
+    rgba(10, 19, 13, 0.88) 72%,
+    var(--contact-surface-top) 100%
+  );
+  pointer-events: none;
 }
 
 .contact-hero-content {
@@ -37,7 +71,7 @@
 
 .contact-content {
   width: min(100%, 1200px);
-  margin: clamp(-118px, -9vw, -82px) auto 100px;
+  margin: calc(var(--contact-overlap) * -1) auto 0;
   padding: 0 clamp(16px, 4vw, 24px);
   position: relative;
   z-index: 2;
@@ -173,14 +207,14 @@
 }
 
 @media (max-width: 900px) {
-  .contact-hero {
-    min-height: 480px;
-    padding-bottom: 108px;
+  .contact-page {
+    --contact-overlap: 52px;
+    padding-bottom: 72px;
   }
 
-  .contact-content {
-    margin-top: -52px;
-    margin-bottom: 72px;
+  .contact-hero {
+    min-height: 480px;
+    padding-bottom: calc(96px + var(--contact-overlap));
   }
 
   .contact-grid {
@@ -189,15 +223,15 @@
 }
 
 @media (max-width: 640px) {
+  .contact-page {
+    --contact-overlap: 24px;
+    padding-bottom: 56px;
+  }
+
   .contact-hero {
     min-height: 430px;
     padding-top: 118px;
-    padding-bottom: 84px;
-  }
-
-  .contact-content {
-    margin-top: 24px;
-    margin-bottom: 56px;
+    padding-bottom: calc(84px + var(--contact-overlap));
   }
 
   .contact-info,
