@@ -4,16 +4,21 @@
 
 .hero-wrapper {
   position: relative;
-  background: linear-gradient(180deg, rgba(243, 248, 244, 1), rgba(232, 241, 233, 1));
+  min-height: 100dvh;
+  background: #08110b;
+  overflow: clip;
 }
 
 .landing-hero {
   position: relative;
-  min-height: clamp(640px, 90vh, 880px);
+  min-height: 100dvh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: clamp(128px, 16vw, 168px) clamp(16px, 4vw, 24px) clamp(180px, 22vw, 240px);
+  padding:
+    clamp(112px, 14vh, 152px)
+    clamp(16px, 4vw, 24px)
+    clamp(280px, 34vh, 340px);
   color: var(--white);
   overflow: hidden;
 }
@@ -21,22 +26,22 @@
 .landing-hero-content {
   position: relative;
   z-index: 2;
-  width: min(100%, 900px);
+  width: min(100%, 820px);
   text-align: center;
 }
 
 .landing-hero-title {
-  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-size: clamp(2.8rem, 5.1vw, 4.7rem);
   font-weight: 700;
-  line-height: 1.08;
-  margin-bottom: 1.2rem;
+  line-height: 1.05;
+  margin-bottom: 0.95rem;
   text-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
 }
 
 .landing-hero-subtitle {
-  font-size: clamp(1.05rem, 2vw, 1.25rem);
-  line-height: 1.7;
-  max-width: 62ch;
+  font-size: clamp(1rem, 1.55vw, 1.15rem);
+  line-height: 1.65;
+  max-width: 54ch;
   margin: 0 auto;
   opacity: 0.95;
   text-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
@@ -56,20 +61,22 @@
   inset: 0;
   z-index: 1;
   background:
-    linear-gradient(180deg, rgba(3, 10, 7, 0.2), rgba(3, 10, 7, 0.5)),
+    linear-gradient(180deg, rgba(3, 10, 7, 0.22), rgba(3, 10, 7, 0.42) 58%, rgba(3, 10, 7, 0.72)),
     radial-gradient(circle at top, rgba(255, 255, 255, 0.05), transparent 40%);
 }
 
 .roles {
-  position: relative;
+  position: absolute;
+  inset-inline: 0;
+  bottom: clamp(24px, 4vh, 44px);
   z-index: 3;
   width: 100%;
-  background: linear-gradient(180deg, rgba(243, 248, 244, 0), rgba(243, 248, 244, 1) 18%);
-  padding: 0 0 96px;
+  background: none;
+  padding: 0;
 }
 
 .roles-overlay {
-  margin-top: clamp(-124px, -10vw, -84px);
+  margin-top: 0;
 }
 
 .container {
@@ -80,64 +87,142 @@
 
 .roles-title {
   text-align: center;
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-size: clamp(1.9rem, 2.8vw, 2.45rem);
   font-weight: 600;
-  margin-bottom: 1.75rem;
+  margin-bottom: clamp(1rem, 2vh, 1.6rem);
   color: #ffffff;
-  text-shadow: 0 16px 32px rgba(0, 0, 0, 0.24);
+  text-shadow: 0 16px 32px rgba(0, 0, 0, 0.32);
 }
 
 .roles-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: clamp(18px, 2vw, 28px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 1.8vw, 24px);
+  max-width: min(100%, 980px);
+  margin: 0 auto;
 }
 
 .role-card {
+  position: relative;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(245, 248, 245, 0.96));
-  border-radius: 24px;
-  padding: clamp(24px, 3vw, 36px);
+    linear-gradient(155deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.09));
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(24px) saturate(165%);
+  -webkit-backdrop-filter: blur(24px) saturate(165%);
+  min-height: 236px;
+  padding: clamp(20px, 2vw, 28px);
   text-align: center;
   box-shadow:
-    0 26px 60px rgba(15, 23, 42, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    0 26px 70px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
   cursor: pointer;
   transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+
+.role-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 95% at top left, rgba(255, 255, 255, 0.28), transparent 58%);
 }
 
 .role-card:hover {
   transform: translateY(-6px);
   box-shadow:
-    0 32px 72px rgba(15, 23, 42, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    0 32px 80px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48);
 }
 
 .role-card img {
-  width: clamp(84px, 10vw, 112px);
-  height: clamp(84px, 10vw, 112px);
+  width: clamp(72px, 7vw, 92px);
+  height: clamp(72px, 7vw, 92px);
   object-fit: contain;
-  margin: 0 auto 1.25rem;
+  margin: 0 auto 1rem;
 }
 
 .role-card h3 {
-  font-size: clamp(1.25rem, 2vw, 1.55rem);
+  font-size: clamp(1.12rem, 1.45vw, 1.35rem);
   font-weight: 700;
-  margin-bottom: 0.7rem;
-  color: var(--text-dark);
+  margin-bottom: 0.55rem;
+  color: #ffffff;
+  text-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
 }
 
 .role-card p {
-  font-size: 1rem;
-  color: var(--text-gray);
+  font-size: clamp(0.92rem, 1.05vw, 0.98rem);
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
-@media (max-width: 768px) {
+@media (max-height: 820px) and (min-width: 901px) {
+  .landing-hero {
+    padding-top: 104px;
+    padding-bottom: 248px;
+  }
+
+  .landing-hero-content {
+    width: min(100%, 760px);
+  }
+
+  .landing-hero-title {
+    font-size: clamp(2.5rem, 4.8vw, 4.15rem);
+    margin-bottom: 0.85rem;
+  }
+
+  .landing-hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .roles {
+    bottom: 18px;
+  }
+
+  .roles-title {
+    font-size: clamp(1.6rem, 2.4vw, 2rem);
+    margin-bottom: 0.9rem;
+  }
+
+  .roles-grid {
+    max-width: min(100%, 920px);
+  }
+
+  .role-card {
+    min-height: 208px;
+    padding: 18px 18px 20px;
+    border-radius: 20px;
+  }
+
+  .role-card img {
+    width: 72px;
+    height: 72px;
+    margin-bottom: 0.85rem;
+  }
+
+  .role-card p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-wrapper {
+    min-height: auto;
+    background: linear-gradient(180deg, #08110b, #0f1d14);
+    overflow: visible;
+  }
+
   .landing-hero {
     min-height: 620px;
     align-items: flex-end;
     padding-top: 120px;
     padding-bottom: 96px;
+  }
+
+  .landing-hero-content {
+    width: min(100%, 640px);
   }
 
   .landing-hero-title {
@@ -149,8 +234,11 @@
   }
 
   .roles {
+    position: relative;
+    inset-inline: auto;
+    bottom: auto;
     padding-bottom: 72px;
-    background: linear-gradient(180deg, rgba(243, 248, 244, 0.2), rgba(243, 248, 244, 1) 20%);
+    background: none;
   }
 
   .roles-overlay {
@@ -158,16 +246,17 @@
   }
 
   .roles-title {
-    color: #17351f;
-    text-shadow: none;
+    color: #ffffff;
+    text-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+  }
+
+  .roles-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    max-width: none;
   }
 }
 
 @media (max-width: 480px) {
-  .landing-hero-title br {
-    display: none;
-  }
-
   .landing-hero {
     min-height: 560px;
     padding-inline: 16px;

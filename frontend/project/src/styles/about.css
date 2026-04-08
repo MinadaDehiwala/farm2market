@@ -1,23 +1,145 @@
 .about-page {
+  --about-overlap: clamp(56px, 9vh, 112px);
+  --about-surface-top: #0a130d;
+  --about-surface-mid: #101d14;
+  --about-surface-bottom: #0b120e;
   min-height: 100dvh;
-  background:
-    linear-gradient(180deg, rgba(6, 10, 8, 0.1), rgba(6, 10, 8, 0.72)),
-    linear-gradient(180deg, #f4f8f4 0%, #dce9de 45%, #0b120e 100%);
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
 }
 
-.about-hero {
-  min-height: clamp(560px, 82vh, 760px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(128px, 16vw, 168px) 20px clamp(180px, 18vw, 220px);
+.about-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
   background:
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.58)),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.55)),
     url("https://images.pexels.com/photos/4094697/pexels-photo-4094697.jpeg")
       center / cover no-repeat;
 }
 
+@media (min-width: 901px) {
+  .about-page {
+    --about-overlap: 0px;
+    height: 100dvh;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: minmax(300px, 42dvh) auto auto;
+    padding-bottom: 14px;
+  }
+
+  .about-hero {
+    min-height: 0;
+    align-items: center;
+    padding:
+      clamp(100px, 12dvh, 126px)
+      24px
+      clamp(56px, 7dvh, 92px);
+  }
+
+  .about-hero::after {
+    height: clamp(64px, 10dvh, 110px);
+  }
+
+  .about-hero-content {
+    width: min(100%, 760px);
+    transform: translateY(clamp(-132px, -14dvh, -96px));
+  }
+
+  .about-hero-eyebrow {
+    margin-bottom: 0.45rem;
+  }
+
+  .about-hero-content h2 {
+    font-size: clamp(2.1rem, 4.3vw, 3.2rem);
+    margin-bottom: 0.7rem;
+    line-height: 1.04;
+  }
+
+  .about-hero-content p {
+    font-size: clamp(0.95rem, 1.2vw, 1.04rem);
+    max-width: 58ch;
+  }
+
+  .about-content {
+    margin-top: 0;
+    padding: 0 clamp(18px, 3vw, 28px);
+    align-self: start;
+  }
+
+  .about-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(12px, 1.5vw, 18px);
+  }
+
+  .about-info-card {
+    border-radius: 18px;
+    padding: clamp(14px, 1.6vw, 20px);
+  }
+
+  .about-info-card h4 {
+    margin-bottom: 0.45rem;
+    font-size: 1.02rem;
+  }
+
+  .about-info-card p,
+  .about-info-card li {
+    font-size: 0.93rem;
+    line-height: 1.5;
+  }
+
+  .about-info-card ul {
+    gap: 0.25rem;
+  }
+
+  .about-stats {
+    margin-top: clamp(10px, 1.6dvh, 16px);
+    width: min(100%, 980px);
+    padding: 0 clamp(18px, 3vw, 28px);
+    gap: 12px;
+  }
+
+  .about-stat {
+    border-radius: 16px;
+    padding: 0.9rem 0.75rem;
+  }
+
+  .about-stat strong {
+    font-size: clamp(1.55rem, 2.3vw, 1.95rem);
+  }
+
+  .about-stat span {
+    margin-top: 0.2rem;
+    font-size: 0.88rem;
+  }
+
+  .about-vision {
+    display: none;
+  }
+}
+
+.about-hero {
+  position: relative;
+  min-height: clamp(560px, 82vh, 760px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding:
+    clamp(128px, 16vw, 168px)
+    20px
+    calc(clamp(120px, 14vh, 176px) + var(--about-overlap));
+  background: transparent;
+}
+
+.about-hero::after {
+  content: none;
+}
+
 .about-hero-content {
+  position: relative;
+  z-index: 3;
   width: min(100%, 840px);
   text-align: center;
   color: #fff;
@@ -47,10 +169,10 @@
 
 .about-content {
   width: min(100%, 1200px);
-  margin: clamp(-112px, -9vw, -82px) auto 0;
+  margin: calc(var(--about-overlap) * -1) auto 0;
   padding: 0 clamp(16px, 4vw, 24px);
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 
 .about-card-grid {
@@ -60,13 +182,26 @@
 }
 
 .about-info-card {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(18px);
+  position: relative;
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.66), rgba(255, 255, 255, 0.38));
+  backdrop-filter: blur(26px) saturate(170%);
+  -webkit-backdrop-filter: blur(26px) saturate(170%);
   border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.48);
   padding: clamp(24px, 3vw, 32px);
   box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    0 26px 70px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.46);
+}
+
+.about-info-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at top left, rgba(255, 255, 255, 0.34), transparent 60%);
 }
 
 .about-info-card h4 {
@@ -76,7 +211,7 @@
 
 .about-info-card p,
 .about-info-card li {
-  color: rgba(15, 23, 42, 0.78);
+  color: rgba(10, 20, 14, 0.82);
   line-height: 1.7;
 }
 
@@ -96,13 +231,28 @@
 }
 
 .about-stat {
+  position: relative;
   padding: 1.35rem 1rem;
   border-radius: 22px;
   text-align: center;
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(14px);
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.12));
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  box-shadow:
+    0 20px 46px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.about-stat::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 95% at top left, rgba(255, 255, 255, 0.22), transparent 58%);
 }
 
 .about-stat strong {
@@ -135,14 +285,14 @@
 }
 
 @media (max-width: 768px) {
+  .about-page {
+    --about-overlap: 52px;
+  }
+
   .about-hero {
     min-height: 500px;
     padding-top: 118px;
-    padding-bottom: 104px;
-  }
-
-  .about-content {
-    margin-top: -48px;
+    padding-bottom: calc(96px + var(--about-overlap));
   }
 
   .about-stats {
@@ -155,12 +305,12 @@
 }
 
 @media (max-width: 480px) {
-  .about-hero-content h2 br {
-    display: none;
+  .about-page {
+    --about-overlap: 32px;
   }
 
-  .about-content {
-    margin-top: -28px;
+  .about-hero-content h2 br {
+    display: none;
   }
 
   .about-info-card,
