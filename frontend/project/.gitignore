@@ -23,3 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 dist.zip
+
+# Local environment files (never commit)
+.env
+.env.*
+!.env.example
+!.env.production.example
