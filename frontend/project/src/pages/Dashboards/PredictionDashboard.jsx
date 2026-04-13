@@ -40,7 +40,8 @@ const STATUS_MESSAGES = [
 const LOADER_MIN = 1200;
 const LOADER_MAX_EXTRA = 600;
 const MAX_MODEL_RETRIES = 3;
-const MAX_FORECAST_DAYS = 730;
+const MAX_FORECAST_DAYS = 1200;
+const MAX_FORECAST_END_DATE = "2026-12-31";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 const addDaysISO = (days, baseDate = new Date()) => {
@@ -154,6 +155,10 @@ const validateForecastInput = ({
 
   if (minEndDate && endDate < minEndDate) {
     return `End date must be on or after ${minEndDate}.`;
+  }
+
+  if (endDate > MAX_FORECAST_END_DATE) {
+    return `End date cannot be after ${MAX_FORECAST_END_DATE}.`;
   }
 
   const days = Math.round((end.getTime() - start.getTime()) / 86400000);
@@ -317,6 +322,12 @@ export default function PredictionDashboard() {
       setEndDate(endDateLowerBound);
     }
   }, [endDate, endDateLowerBound]);
+
+  useEffect(() => {
+    if (endDate && endDate > MAX_FORECAST_END_DATE) {
+      setEndDate(MAX_FORECAST_END_DATE);
+    }
+  }, [endDate]);
 
   if (!features.predictionsEnabled) {
     return (
@@ -496,6 +507,7 @@ export default function PredictionDashboard() {
           type="date"
           value={startDate}
           onChange={(event) => setStartDate(event.target.value)}
+          max={MAX_FORECAST_END_DATE}
           disabled={loading}
         />
         <input
@@ -503,6 +515,7 @@ export default function PredictionDashboard() {
           value={endDate}
           onChange={(event) => setEndDate(event.target.value)}
           min={endDateLowerBound || undefined}
+          max={MAX_FORECAST_END_DATE}
           disabled={loading}
         />
 
