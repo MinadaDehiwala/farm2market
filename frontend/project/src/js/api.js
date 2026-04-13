@@ -2,8 +2,9 @@ import { APP_ENV } from "./env";
 
 const DEFAULT_TIMEOUT_MS = 12000;
 const RETRYABLE_STATUS = new Set([408, 429, 500, 502, 503, 504]);
+const EMPTY_CHAT_REPLY = "No response.";
 const CHAT_RESPONSE_GUIDELINES =
-  "Reply in one short paragraph (max 80 words). Use plain text only. No markdown, no lists, no headings, no bold/italic markers.";
+  "Reply in a single short paragraph (max 80 words). Use plain text only and avoid markdown, lists, and headings.";
 
 function trimLikelyTruncatedTail(text) {
   const lines = text.split("\n");
@@ -204,12 +205,14 @@ export async function fetchModels(options = {}) {
   const data = await request("/models", { retries: 1, ...options });
 
   if (!data || !Array.isArray(data.models)) {
-    return { count: 0, models: [] };
+    return { count: 0, models: [], metadata: {} };
   }
 
   return {
     count: Number(data.count || data.models.length),
     models: data.models,
+    metadata:
+      data.metadata && typeof data.metadata === "object" ? data.metadata : {},
   };
 }
 
@@ -232,8 +235,8 @@ export async function fetchChatReply(message, options = {}) {
 
   if (typeof data?.reply === "string" && data.reply.trim()) {
     const normalized = normalizeChatReply(data.reply);
-    return normalized || "No response.";
+    return normalized || EMPTY_CHAT_REPLY;
   }
 
-  return "No response.";
+  return EMPTY_CHAT_REPLY;
 }

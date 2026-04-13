@@ -43,10 +43,29 @@ const MAX_MODEL_RETRIES = 3;
 const MAX_FORECAST_DAYS = 730;
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
-const addDaysISO = (days) => {
-  const date = new Date();
+const addDaysISO = (days, baseDate = new Date()) => {
+  const date = new Date(baseDate);
   date.setDate(date.getDate() + days);
   return date.toISOString().slice(0, 10);
+};
+
+const addDaysToISODate = (isoDate, days) => {
+  if (!isoDate) return "";
+  const parsed = new Date(`${isoDate}T00:00:00`);
+  if (Number.isNaN(parsed.getTime())) return "";
+  return addDaysISO(days, parsed);
+};
+
+const maxISODate = (left, right) => {
+  if (!left) return right || "";
+  if (!right) return left;
+  return left > right ? left : right;
+};
+
+const parseLastTrainingDateFromMessage = (message) => {
+  if (typeof message !== "string") return "";
+  const match = message.match(/last training date \((\d{4}-\d{2}-\d{2})\)/i);
+  return match?.[1] || "";
 };
 
 const retryDelay = (attempt) =>
@@ -107,7 +126,13 @@ const normalizePrediction = (point) => {
   };
 };
 
-const validateForecastInput = ({ veg, market, startDate, endDate }) => {
+const validateForecastInput = ({
+  veg,
+  market,
+  startDate,
+  endDate,
+  minEndDate = "",
+}) => {
   if (!veg || !market) {
     return "Select a vegetable and market first.";
   }
@@ -127,6 +152,10 @@ const validateForecastInput = ({ veg, market, startDate, endDate }) => {
     return "End date must be after start date.";
   }
 
+  if (minEndDate && endDate < minEndDate) {
+    return `End date must be on or after ${minEndDate}.`;
+  }
+
   const days = Math.round((end.getTime() - start.getTime()) / 86400000);
   if (days > MAX_FORECAST_DAYS) {
     return `Forecast range must be ${MAX_FORECAST_DAYS} days or less.`;
@@ -144,6 +173,7 @@ export default function PredictionDashboard() {
   const finishTimerRef = useRef(null);
 
   const [models, setModels] = useState([]);
+  const [modelMetadata, setModelMetadata] = useState({});
   const [modelsLoading, setModelsLoading] = useState(true);
   const [modelsError, setModelsError] = useState("");
 
@@ -179,6 +209,21 @@ export default function PredictionDashboard() {
     return [...new Set(source.map((entry) => entry.market))];
   }, [parsedModels, veg]);
 
+  const selectedModelKey = useMemo(() => {
+    if (!veg || !market) return "";
+    return `${veg}_${market}`;
+  }, [veg, market]);
+
+  const selectedModelMeta = useMemo(
+    () => modelMetadata[selectedModelKey] || null,
+    [modelMetadata, selectedModelKey]
+  );
+
+  const lastTrainDate = selectedModelMeta?.last_train_date || "";
+  const minEndDate = lastTrainDate ? addDaysToISODate(lastTrainDate, 1) : "";
+  const minEndDateFromStart = addDaysToISODate(startDate, 1);
+  const endDateLowerBound = maxISODate(minEndDateFromStart, minEndDate);
+
   useEffect(() => {
     if (market && markets.length > 0 && !markets.includes(market)) {
       setMarket("");
@@ -191,6 +236,7 @@ export default function PredictionDashboard() {
 
     if (!features.predictionsEnabled) {
       setModels([]);
+      setModelMetadata({});
       setModelsLoading(false);
       setModelsError("");
       return () => {
@@ -214,6 +260,9 @@ export default function PredictionDashboard() {
 
           const modelList = Array.isArray(data.models) ? data.models : [];
           setModels(modelList);
+          setModelMetadata(
+            data.metadata && typeof data.metadata === "object" ? data.metadata : {}
+          );
 
           if (modelList.length === 0) {
             setModelsError("Prediction API is online, but no models were found.");
@@ -262,6 +311,13 @@ export default function PredictionDashboard() {
     []
   );
 
+  useEffect(() => {
+    if (!endDateLowerBound) return;
+    if (!endDate || endDate < endDateLowerBound) {
+      setEndDate(endDateLowerBound);
+    }
+  }, [endDate, endDateLowerBound]);
+
   if (!features.predictionsEnabled) {
     return (
       <div className="dashboard-container prediction-dashboard">
@@ -273,7 +329,13 @@ export default function PredictionDashboard() {
   const runPrediction = async () => {
     if (loading || modelsLoading) return;
 
-    const formError = validateForecastInput({ veg, market, startDate, endDate });
+    const formError = validateForecastInput({
+      veg,
+      market,
+      startDate,
+      endDate,
+      minEndDate: endDateLowerBound,
+    });
     if (formError) {
       setError(formError);
       return;
@@ -319,12 +381,24 @@ export default function PredictionDashboard() {
       setForecast(response);
     } catch (requestError) {
       if (!controller.signal.aborted) {
-        setError(
-          toUserMessage(
-            requestError,
-            "Unable to generate forecast right now. Please try again."
-          )
+        const message = toUserMessage(
+          requestError,
+          "Unable to generate forecast right now. Please try again."
         );
+        const lastTrainingDate = parseLastTrainingDateFromMessage(message);
+        if (lastTrainingDate) {
+          const suggestedEnd = addDaysToISODate(lastTrainingDate, 1);
+          if (suggestedEnd) {
+            setEndDate(maxISODate(suggestedEnd, minEndDateFromStart));
+            setError(
+              `This model is trained up to ${lastTrainingDate}. I updated the end date so you can run a valid forecast.`
+            );
+          } else {
+            setError(message);
+          }
+        } else {
+          setError(message);
+        }
       }
     } finally {
       clearInterval(statusTimerRef.current);
@@ -428,6 +502,7 @@ export default function PredictionDashboard() {
           type="date"
           value={endDate}
           onChange={(event) => setEndDate(event.target.value)}
+          min={endDateLowerBound || undefined}
           disabled={loading}
         />
 
@@ -445,6 +520,13 @@ export default function PredictionDashboard() {
           {loading ? "Running..." : "Run forecast"}
         </button>
       </div>
+
+      {!modelsLoading && selectedModelMeta?.last_train_date && (
+        <div className="prediction-hint">
+          Latest trained date for this model: {selectedModelMeta.last_train_date}.
+          End date is auto-limited to at least the next day.
+        </div>
+      )}
 
       {modelsLoading && (
         <div className="chart-placeholder">Loading available prediction models...</div>
