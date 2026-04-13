@@ -3,22 +3,33 @@ import pandas as pd
 from prophet import Prophet
 import joblib
 
-# -----------------------
-# Paths (EC2 safe)
-# -----------------------
+# Paths
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(BASE_DIR, "data", "final_dataset.csv")
 MODEL_DIR = os.path.join(BASE_DIR, "models")
 
-# -----------------------
-# Trainer
-# -----------------------
+DATA_PATH_CANDIDATES = [
+    os.path.join(BASE_DIR, "data", "final_dataset.csv"),
+    os.path.join(os.path.dirname(BASE_DIR), "data", "final_dataset.csv"),
+]
+
+
+def resolve_data_path():
+    for path in DATA_PATH_CANDIDATES:
+        if os.path.exists(path):
+            return path
+    tried = ", ".join(DATA_PATH_CANDIDATES)
+    raise FileNotFoundError(f"Could not find final_dataset.csv. Tried: {tried}")
+
+# Training
 
 def main():
     os.makedirs(MODEL_DIR, exist_ok=True)
 
-    df = pd.read_csv(DATA_PATH)
+    data_path = resolve_data_path()
+    print("Using dataset:", data_path)
+
+    df = pd.read_csv(data_path)
     df["date"] = pd.to_datetime(df["date"])
 
     vegetables = df["name"].unique()
@@ -28,7 +39,7 @@ def main():
         for veg in vegetables:
             df_f = df[(df["name"] == veg) & (df["market"] == market)].copy()
 
-            if len(df_f) < 60:
+            if len(df_f) < 30:
                 continue  # skip tiny series
 
             # Aggregate duplicate dates
