@@ -19,7 +19,8 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.getenv("MODEL_DIR", os.path.join(BASE_DIR, "models"))
-MAX_FORECAST_DAYS = int(os.getenv("MAX_FORECAST_DAYS", "730"))
+MAX_FORECAST_DAYS = max(int(os.getenv("MAX_FORECAST_DAYS", "730")), 1200)
+MAX_FORECAST_END_DATE = dt.date(2026, 12, 31)
 MODEL_CACHE_TTL_SECONDS = int(os.getenv("MODEL_CACHE_TTL_SECONDS", "0"))
 WARMUP_MODEL_KEYS = [
     key.strip().lower()
@@ -147,6 +148,11 @@ class PredictQuery(BaseModel):
     def validate_window(self) -> "PredictQuery":
         if self.end <= self.start:
             raise ValueError("end must be after start")
+
+        if self.end > MAX_FORECAST_END_DATE:
+            raise ValueError(
+                f"Maximum supported end date is {MAX_FORECAST_END_DATE.isoformat()}"
+            )
 
         horizon = (self.end - self.start).days
         if horizon > MAX_FORECAST_DAYS:
