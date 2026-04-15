@@ -99,6 +99,19 @@ const normalizeNumber = (value) => {
   return Math.max(0, Number(numeric.toFixed(2)));
 };
 
+const formatPrice = (value) => {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return "Rs. -";
+  return `Rs. ${Math.round(numeric).toLocaleString()}`;
+};
+
+const formatPricePerKg = (value) => `${formatPrice(value)}/kg`;
+
+const formatName = (value) =>
+  (value || "")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+
 const normalizePrediction = (point) => {
   const rawDate = point?.ds;
   const parsedDate = rawDate ? new Date(rawDate) : null;
@@ -441,28 +454,36 @@ export default function PredictionDashboard() {
       labels: cleanPredictions.map((point) => point.label),
       datasets: [
         {
-          label: "Predicted Price per Kg",
-          data: cleanPredictions.map((point) => point.yhat),
-          borderColor: "#22c55e",
-          borderWidth: 4,
-          tension: 0.35,
-          pointRadius: 4,
-        },
-        {
-          label: "Upper Bound",
-          data: cleanPredictions.map((point) => point.yhat_upper),
-          borderWidth: 0,
-          pointRadius: 0,
-          fill: "-1",
-          backgroundColor: "rgba(34, 197, 94, 0.18)",
-        },
-        {
-          label: "Lower Bound",
+          label: "Lower estimate",
           data: cleanPredictions.map((point) => point.yhat_lower),
-          borderWidth: 0,
+          borderColor: "rgba(250, 204, 21, 0.85)",
+          borderDash: [6, 6],
+          borderWidth: 2,
+          tension: 0.35,
           pointRadius: 0,
-          fill: true,
-          backgroundColor: "rgba(34, 197, 94, 0.18)",
+        },
+        {
+          label: "Upper estimate",
+          data: cleanPredictions.map((point) => point.yhat_upper),
+          borderColor: "rgba(96, 165, 250, 0.85)",
+          borderDash: [6, 6],
+          borderWidth: 2,
+          pointRadius: 0,
+          tension: 0.35,
+          fill: "-1",
+          backgroundColor: "rgba(96, 165, 250, 0.14)",
+        },
+        {
+          label: "Predicted price per kg",
+          data: cleanPredictions.map((point) => point.yhat),
+          borderColor: "#4ade80",
+          backgroundColor: "#4ade80",
+          borderWidth: 4,
+          pointBackgroundColor: "#dcfce7",
+          pointBorderColor: "#14532d",
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          tension: 0.35,
         },
       ],
     };
@@ -470,6 +491,8 @@ export default function PredictionDashboard() {
 
   const latest = cleanPredictions[cleanPredictions.length - 1] || null;
   const hasValidForecast = cleanPredictions.length > 0;
+  const forecastName =
+    veg && market ? `${formatName(veg)} in ${formatName(market)}` : "";
 
   return (
     <div className="dashboard-container prediction-dashboard">
@@ -477,47 +500,60 @@ export default function PredictionDashboard() {
       <p className="dashboard-subtitle">AI-powered price forecasts</p>
 
       <div className="controls-card liquid-glass">
-        <select
-          value={veg}
-          onChange={(event) => setVeg(event.target.value)}
-          disabled={modelsLoading || loading || models.length === 0}
-        >
-          <option value="">Select vegetable</option>
-          {vegetables.map((item) => (
-            <option key={item} value={item}>
-              {item.replace(/_/g, " ")}
-            </option>
-          ))}
-        </select>
+        <label className="control-field">
+          <span>Vegetable</span>
+          <select
+            value={veg}
+            onChange={(event) => setVeg(event.target.value)}
+            disabled={modelsLoading || loading || models.length === 0}
+          >
+            <option value="">Select vegetable</option>
+            {vegetables.map((item) => (
+              <option key={item} value={item}>
+                {formatName(item)}
+              </option>
+            ))}
+          </select>
+        </label>
 
-        <select
-          value={market}
-          onChange={(event) => setMarket(event.target.value)}
-          disabled={modelsLoading || loading || !veg || markets.length === 0}
-        >
-          <option value="">Select market</option>
-          {markets.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
+        <label className="control-field">
+          <span>Market</span>
+          <select
+            value={market}
+            onChange={(event) => setMarket(event.target.value)}
+            disabled={modelsLoading || loading || !veg || markets.length === 0}
+          >
+            <option value="">Select market</option>
+            {markets.map((item) => (
+              <option key={item} value={item}>
+                {formatName(item)}
+              </option>
+            ))}
+          </select>
+        </label>
 
-        <input
-          type="date"
-          value={startDate}
-          onChange={(event) => setStartDate(event.target.value)}
-          max={MAX_FORECAST_END_DATE}
-          disabled={loading}
-        />
-        <input
-          type="date"
-          value={endDate}
-          onChange={(event) => setEndDate(event.target.value)}
-          min={endDateLowerBound || undefined}
-          max={MAX_FORECAST_END_DATE}
-          disabled={loading}
-        />
+        <label className="control-field">
+          <span>Start date</span>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(event) => setStartDate(event.target.value)}
+            max={MAX_FORECAST_END_DATE}
+            disabled={loading}
+          />
+        </label>
+
+        <label className="control-field">
+          <span>End date</span>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(event) => setEndDate(event.target.value)}
+            min={endDateLowerBound || undefined}
+            max={MAX_FORECAST_END_DATE}
+            disabled={loading}
+          />
+        </label>
 
         <button
           className="predict-btn"
@@ -549,17 +585,38 @@ export default function PredictionDashboard() {
         <div className="error-box">{modelsError}</div>
       )}
 
-      <div className="chart-card liquid-glass">
-        {latest && !loading && !error && (
-          <div className="price-kpi">
-            <div className="price-label">Predicted Price per Kg</div>
-            <div className="price-value">Rs. {Math.round(latest.yhat).toLocaleString()}</div>
-            <div className="price-range">
-              Range: {Math.round(latest.yhat_lower)} - {Math.round(latest.yhat_upper)}
+      {latest && !loading && !error && (
+        <section className="forecast-summary liquid-glass" aria-label="Forecast summary">
+          <div className="forecast-summary-copy">
+            <p className="forecast-eyebrow">Forecast for {latest.label}</p>
+            <h2>{forecastName}</h2>
+            <p>
+              Predicted price is the main estimate. Lower and upper estimates show
+              the expected range for the same date.
+            </p>
+          </div>
+
+          <div className="forecast-metrics" role="list">
+            <div className="forecast-metric forecast-metric-primary" role="listitem">
+              <span>Predicted price per kg</span>
+              <strong>{formatPricePerKg(latest.yhat)}</strong>
+              <small>Main value to use for planning.</small>
+            </div>
+            <div className="forecast-metric forecast-metric-low" role="listitem">
+              <span>Lower estimate</span>
+              <strong>{formatPricePerKg(latest.yhat_lower)}</strong>
+              <small>Lower side of the expected range.</small>
+            </div>
+            <div className="forecast-metric forecast-metric-high" role="listitem">
+              <span>Upper estimate</span>
+              <strong>{formatPricePerKg(latest.yhat_upper)}</strong>
+              <small>Higher side of the expected range.</small>
             </div>
           </div>
-        )}
+        </section>
+      )}
 
+      <div className="chart-card liquid-glass">
         {!forecast && !loading && !error && (
           <div className="chart-placeholder">Select inputs and run forecast</div>
         )}
@@ -583,54 +640,73 @@ export default function PredictionDashboard() {
         )}
 
         {chartData && !loading && !error && hasValidForecast && (
-          <Line
-            data={chartData}
-            options={{
-              responsive: true,
-              plugins: {
-                legend: {
-                  labels: {
-                    font: {
-                      size: 14,
-                      weight: "600",
+          <>
+            <div className="forecast-chart-wrap">
+              <Line
+                data={chartData}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      labels: {
+                        boxHeight: 10,
+                        boxWidth: 18,
+                        font: {
+                          size: 14,
+                          weight: "600",
+                        },
+                      },
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: (context) =>
+                          `${context.dataset.label}: ${formatPricePerKg(
+                            context.parsed.y
+                          )}`,
+                      },
                     },
                   },
-                },
-              },
-              scales: {
-                x: {
-                  ticks: {
-                    font: {
-                      size: 14,
+                  scales: {
+                    x: {
+                      ticks: {
+                        font: {
+                          size: 14,
+                        },
+                      },
+                      title: {
+                        display: true,
+                        text: "Date",
+                        font: {
+                          size: 16,
+                          weight: "600",
+                        },
+                      },
+                    },
+                    y: {
+                      ticks: {
+                        callback: (value) => formatPrice(value),
+                        font: {
+                          size: 14,
+                        },
+                      },
+                      title: {
+                        display: true,
+                        text: "Price per kg",
+                        font: {
+                          size: 16,
+                          weight: "600",
+                        },
+                      },
                     },
                   },
-                  title: {
-                    display: true,
-                    text: "Date",
-                    font: {
-                      size: 16,
-                      weight: "600",
-                    },
-                  },
-                },
-                y: {
-                  ticks: {
-                    font: {
-                      size: 14,
-                    },
-                  },
-                  title: {
-                    display: true,
-                    text: "Price",
-                    font: {
-                      size: 16,
-                      weight: "600",
-                    },
-                  },
-                },
-              },
-            }}
-          />
+                }}
+              />
+            </div>
+            <p className="chart-note">
+              Shaded area shows the expected range between lower and upper estimates.
+            </p>
+          </>
         )}
       </div>
     </div>
